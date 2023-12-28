@@ -83,41 +83,49 @@ function addFolderManagementButtons(folderDiv, folderName) {
   folderDiv.appendChild(deleteButton);
 }
 // This function displays the chats for a specific folder
-// This function displays the chats for a specific folder
 function displayChatsForFolder(folderName) {
   chrome.storage.local.get({folders: {}}, function (data) {
     const folders = data.folders;
     const chats = folders[folderName];
     const folderInterface = document.getElementById('folder-interface');
-    folderInterface.innerHTML = ''; // Clear the interface
-    const folderTitle = document.createElement('h2');
+    folderInterface.innerHTML = '';
+    folderInterface.style.display = 'flex';
+    folderInterface.style.flexDirection = 'column';
+
+    const chatContainer = document.createElement('div');
+    chatContainer.style.overflowY = 'auto';
+    chatContainer.style.maxHeight = '150px';
+
+    const folderTitle = document.createElement('p');
     folderTitle.textContent = folderName;
-    folderInterface.appendChild(folderTitle);
+    folderTitle.style.fontWeight = 'bold';
+    folderTitle.style.fontSize = '1.3em'; // Change '1.5em' to the size you want
+    chatContainer.appendChild(folderTitle); // Append to chatContainer instead of folderInterface
+
     chats.forEach((chat, index) => {
       const chatDiv = document.createElement('div');
       chatDiv.className = 'chat';
-      chatDiv.style.fontSize = '0.8em'; // Make the font size smaller
-      // Make the chat name clickable
-      chatDiv.style.margin = '10px 0'; // Add margin to the top and bottom
+      chatDiv.style.fontSize = '0.8em';
+      chatDiv.style.margin = '6px 0';
       const chatLink = document.createElement('a');
       chatLink.href = chat.url;
-      chatLink.textContent = chat.title; // Set the chat title as the link text
+      chatLink.textContent = chat.title;
       chatLink.target = '_blank';
       chatDiv.appendChild(chatLink);
-      // Add edit button
+
       const editButton = document.createElement('button');
       editButton.textContent = '✏️';
-      editButton.style.marginLeft = '10px'; // Add left margin
+      editButton.style.marginLeft = '10px';
       editButton.onclick = function() {
         const newChatName = prompt('New name for the chat:', chat.title);
         if (newChatName) {
           chat.title = newChatName;
           chrome.storage.local.set({folders});
-          displayChatsForFolder(folderName); // Refresh the folder display
+          displayChatsForFolder(folderName);
         }
       };
       chatDiv.appendChild(editButton);
-      // Add delete button
+
       const deleteButton = document.createElement('button');
       deleteButton.textContent = '🗑️';
       deleteButton.onclick = function() {
@@ -128,11 +136,16 @@ function displayChatsForFolder(folderName) {
         }
       };
       chatDiv.appendChild(deleteButton);
-      folderInterface.appendChild(chatDiv);
+      chatContainer.appendChild(chatDiv);
     });
+
+    folderInterface.appendChild(chatContainer);
+
     const backButton = document.createElement('button');
     backButton.textContent = 'Back to Folders';
-    backButton.style.fontWeight = 'bold'; // Make the text bold
+    backButton.style.fontWeight = 'bold';
+    backButton.style.marginTop = 'auto';
+    backButton.style.alignSelf = 'flex-start'; // Add this line
     backButton.onclick = loadFolders;
     folderInterface.appendChild(backButton);
   });
