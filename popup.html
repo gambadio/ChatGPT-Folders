@@ -64,7 +64,7 @@
     .slider.round:before {
       border-radius: 50%;
     }
-    #manage-account {
+    button {
       margin-top: 10px;
       padding: 5px;
       font-size: 1em;
@@ -77,15 +77,21 @@
   </style>
 </head>
 <body>
-  <h2>Chat GPT Folder</h2>
-  <img src="small-picture.png" alt="Small Picture" style="width: 50px; height: 50px;">
-  <label class="switch">
-    <input type="checkbox" id="toggle-switch">
-    <span class="slider round"></span>
-  </label>
+  <h1>ChatGPT Folders</h1>
+  <div style="display: flex; align-items: center; justify-content: center;">
+    <img src="small-picture.png" alt="Small Picture" style="width: 80px; height: 80px;">
+    <label class="switch">
+      <input type="checkbox" id="toggle-switch">
+      <span class="slider round"></span>
+    </label>
+  </div>
   <button id="manage-account">Manage Account</button>
-  <button id="checkPaymentStatusButton">Check Payment Status</button> <!-- Added Button -->
-  <script src="ExtPay.js"></script>
+  <button id="start-trial">Start 7 Days Trial</button>
+  <button id="checkPaymentStatusButton">Check Payment Status</button>
   <script src="popup.js"></script>
+  <script src="ExtPay.js"></script>
 </body>
 </html>
+
+
+

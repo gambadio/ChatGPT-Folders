@@ -20,7 +20,6 @@ function createFolderDropdown(folderNames) {
   const folderName = window.prompt("Which folder would you like to add this to?\n\n" + folderNames.join("\n"));
   return folderName;
 }
-// Other related functions...
 // Create an observer instance to watch for changes in the DOM
 const observer = new MutationObserver(mutations => {
   mutations.forEach(mutation => {

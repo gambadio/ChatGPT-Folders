@@ -15,33 +15,25 @@ extpay.onPaid.addListener(user => {
     });
 });
 
-extpay.getUser().then(user => {
-    if (user.paid) {
-        // User has paid, handle accordingly
-    } else {
-        extpay.openTrialPage();
-    }
+extpay.onTrialStarted.addListener(user => {
+    console.log('User started trial');
+    checkPaymentStatusAndUpdateFlag();
+
+    // Refresh all tabs that match the URL "https://chat.openai.com/*"
+    chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
+        for (let tab of tabs) {
+            chrome.tabs.reload(tab.id);
+        }
+    });
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.hasOwnProperty('extensionEnabled')) {
-    chrome.storage.local.set({ extensionEnabled: request.extensionEnabled }, () => {
-      chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
-        for (let tab of tabs) {
-          chrome.tabs.reload(tab.id);
-        }
-      });
-    });
-  }
-  
-  if (request.openPaymentPage) {
-    extpay.openPaymentPage(); // Open the ExtensionPay payment page
-  }
-
-  // Added: Check Payment Status on button click
-  if (request.action === "checkPaymentStatus") {
-    checkPaymentStatusAndUpdateFlag();
-  }
+extpay.getUser().then(user => {
+    if (user.paid) {
+        console.log('User has paid');
+    } else {
+        // Open the trial setup page instead of the payment page
+        extpay.openTrialPage();
+    }
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

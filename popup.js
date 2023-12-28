@@ -16,19 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
     extpay.openPaymentPage();
   });
 
-  // Added: Event listener for the Check Payment Status button
-  document.getElementById('checkPaymentStatusButton').addEventListener('click', function() {
-    chrome.runtime.sendMessage({ action: "checkPaymentStatus" });
+  document.getElementById('start-trial').addEventListener('click', function() {
+    extpay.openTrialPage();
   });
 
-  // Optional: Additional UI handling based on user payment status
-  extpay.getUser().then(user => {
-    const now = new Date();
-    const sevenDaysInMillis = 1000 * 60 * 60 * 24 * 7;
-    if (user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis)) {
-      // Handle UI if the user has paid or is in the trial period
-    }
-  }).catch(err => {
-    // Handle errors
+  document.getElementById('checkPaymentStatusButton').addEventListener('click', function() {
+    chrome.runtime.sendMessage({ action: "checkPaymentStatus" });
   });
 });
