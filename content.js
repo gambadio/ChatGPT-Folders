@@ -1,3 +1,11 @@
+chrome.storage.local.get('extensionEnabled', function(data) {
+  if (data.extensionEnabled) {
+    const extpay = ExtPay('chatgpt-folders');
+    extpay.getUser().then(user => {
+      const now = new Date();
+      const sevenDays = 1000*60*60*24*7; // in milliseconds
+      if (user.paid || (user.trialStartedAt && (now - user.trialStartedAt) < sevenDays)) {
+
 
 chrome.storage.local.get('extensionEnabled', function(data) {
   if (data.extensionEnabled) {
@@ -505,4 +513,8 @@ function deleteFolder(folderName) {
     });
   });
 }  }
+});
+}
+});
+}
 });

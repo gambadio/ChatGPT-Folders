@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Extension Toggle</title>
+  <title>Chat GPT Folder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;700&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
   <style>
     body {
       width: 200px;
       text-align: center;
       padding: 10px;
+      background: linear-gradient(135deg, #2f3d79 0%, #53ad6e 50%, #b1a95f 100%);
+      font-family: 'Josefin Sans', sans-serif;
+    }
+    h3 {
+      font-family: 'VT323', monospace;
     }
     .switch {
       position: relative;
@@ -58,14 +64,27 @@
     .slider.round:before {
       border-radius: 50%;
     }
+    #manage-account {
+      margin-top: 10px;
+      padding: 5px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: none;
+      color: white;
+      background-color: #2196F3;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h3>Extension Toggle</h3>
+  <h2>Chat GPT Folder</h2>
+  <img src="small-picture.png" alt="Small Picture" style="width: 50px; height: 50px;">
   <label class="switch">
     <input type="checkbox" id="toggle-switch">
     <span class="slider round"></span>
   </label>
+  <button id="manage-account">Manage Account</button>
+  <script src="ExtPay.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

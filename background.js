@@ -1,20 +1,21 @@
-// background.js
+importScripts('./ExtPay.js');
 
-// Set the extensionEnabled flag to true when the extension is installed
-chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.local.set({ extensionEnabled: true });
-  });
-  
-  // Listen for a message from the popup script
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (typeof request.extensionEnabled !== 'undefined') {
-      chrome.storage.local.set({ extensionEnabled: request.extensionEnabled }, () => {
-        chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
-          for (let tab of tabs) {
-            chrome.tabs.reload(tab.id);
-          }
-        });
+var extpay = ExtPay('chatgpt-folders');
+extpay.startBackground();
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (typeof request.extensionEnabled !== 'undefined') {
+      extpay.getUser().then(user => {
+          const now = new Date();
+          const sevenDays = 1000 * 60 * 60 * 24 * 7; // in milliseconds
+          const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - user.trialStartedAt) < sevenDays);
+          chrome.storage.sync.set({ extensionEnabled: isUserInTrialOrPaid }, () => {
+              chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
+                  for (let tab of tabs) {
+                      chrome.tabs.reload(tab.id);
+                  }
+              });
+          });
       });
-    }
-  });
-  
+  }
+});
