@@ -22,5 +22,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById('checkPaymentStatusButton').addEventListener('click', function() {
     chrome.runtime.sendMessage({ action: "checkPaymentStatus" });
+  
+    // Refresh all tabs that match the URL "https://chat.openai.com/*"
+    chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
+      for (let tab of tabs) {
+        chrome.tabs.reload(tab.id);
+      }
+    });
+  });
+
+  document.querySelector('a[href="https://www.teenagetech.xyz/useragreementfolders"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    chrome.tabs.create({url: e.target.href});
+  });
+
+  document.querySelector('a[href="https://www.teenagetech.xyz/chatgptfolders"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    chrome.tabs.create({url: e.target.href});
   });
 });

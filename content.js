@@ -233,6 +233,7 @@ function addAddToFolderButton(menu) {
   };
   // Append the new button to the menu
   menu.appendChild(addToFolderButton);
+  
 }
 function createAndShowFolderDropdown(folderNames, callback) {
   // Create the modal
@@ -265,20 +266,33 @@ function createAndShowFolderDropdown(folderNames, callback) {
     select.appendChild(option);
   });
   modal.appendChild(select);
- // Create the OK button
- const okButton = document.createElement('button');
- okButton.textContent = 'OK';
- okButton.style.marginTop = '10px'; // Place the button below the dropdown
- okButton.style.display = 'block'; // Make the button a block element
- okButton.style.marginLeft = 'auto'; // Center the button horizontally
- okButton.style.marginRight = 'auto';
- okButton.onclick = function() {
+  // Create a container for the buttons
+  const buttonContainer = document.createElement('div');
+  buttonContainer.style.display = 'flex';
+  buttonContainer.style.justifyContent = 'center'; // Center the buttons horizontally
+  buttonContainer.style.gap = '30px'; // Add space between the buttons
+  buttonContainer.style.marginTop = '10px';
+
+  // Create the OK button
+  const okButton = document.createElement('button');
+  okButton.textContent = 'OK';
+  okButton.onclick = function() {
     // Call the callback function with the selected folder name
     callback(select.value);
     // Remove the modal after selection
     modal.remove();
   };
-  modal.appendChild(okButton);
+  buttonContainer.appendChild(okButton);
+  // Create the Cancel button
+  const cancelButton = document.createElement('button');
+  cancelButton.textContent = 'Cancel';
+  cancelButton.onclick = function() {
+    // Remove the modal when the Cancel button is clicked
+    modal.remove();
+  };
+  buttonContainer.appendChild(cancelButton);
+  // Append the button container to the modal
+  modal.appendChild(buttonContainer);
   // Append the modal to the DOM
   document.body.appendChild(modal);
 }

@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "ChatGPT Folder Extension",
+  "name": "ChatGPT Folders",
   "version": "1.0",
   "description": "Manage ChatGPT conversations in folders.",
   "permissions": [
