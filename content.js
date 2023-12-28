@@ -1,10 +1,11 @@
-chrome.storage.local.get('extensionEnabled', function(data) {
-  if (data.extensionEnabled) {
+chrome.storage.local.get(['extensionEnabled', 'premiumFeaturesEnabled'], function(data) {
+  if ((data.hasOwnProperty('extensionEnabled') ? data.extensionEnabled : true) && data.premiumFeaturesEnabled) {
     const extpay = ExtPay('chatgpt-folders');
     extpay.getUser().then(user => {
       const now = new Date();
       const sevenDays = 1000*60*60*24*7; // in milliseconds
-      if (user.paid || (user.trialStartedAt && (now - user.trialStartedAt) < sevenDays)) {
+      if (user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDays)) {
+        console.log('User has paid or is in trial period');
 
 
 chrome.storage.local.get('extensionEnabled', function(data) {
@@ -514,7 +515,14 @@ function deleteFolder(folderName) {
   });
 }  }
 });
+
+} else {
+  console.log('User has not paid and is not in trial period');
 }
+}).catch(error => {
+console.error('Error getting user data:', error);
 });
+} else {
+console.log('Extension is not enabled or user has not paid for premium features');
 }
 });
