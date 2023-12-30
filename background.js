@@ -57,12 +57,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+let trialEndedMessageSent = false;
+
 function checkPaymentStatusAndUpdateFlag() {
   extpay.getUser().then(user => {
     const now = new Date();
     const sevenDaysInMillis = 1000 * 60 * 60 * 24 * 7;
     const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
-    
+
+    if (!isUserInTrialOrPaid && !trialEndedMessageSent) {
+      alert('Your trial is over');
+      trialEndedMessageSent = true;
+    }
+
     chrome.storage.local.set({ premiumFeaturesEnabled: isUserInTrialOrPaid });
   }).catch(error => {
     console.error('Error checking payment status:', error);

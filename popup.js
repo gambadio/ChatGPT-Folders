@@ -17,11 +17,14 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.getElementById('start-trial').addEventListener('click', function() {
-    extpay.openTrialPage();
+    extpay.openTrialPage('3-minute');
   });
 
   document.getElementById('checkPaymentStatusButton').addEventListener('click', function() {
     chrome.runtime.sendMessage({ action: "checkPaymentStatus" });
+    chrome.runtime.getBackgroundPage((backgroundPage) => {
+      backgroundPage.checkPaymentStatusAndUpdateFlag();
+    });
   
     // Refresh all tabs that match the URL "https://chat.openai.com/*"
     chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
