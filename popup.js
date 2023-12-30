@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
   
       if (isUserInTrialOrPaid) {
-        extpay.openTrialPage();
+        extpay.openTrialPage('3-day');
       } else if ((now - new Date(user.trialStartedAt)) > sevenDaysInMillis){
         chrome.notifications.create({
           type: 'basic',
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
           title: 'Trial Ended',
           message: 'Your trial is over'
         });      }
-        else {extpay.openTrialPage();}
+        else {extpay.openTrialPage('3-day');}
     }).catch(error => {
       console.error('Error checking payment status:', error);
     });

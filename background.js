@@ -80,7 +80,7 @@ function checkPaymentStatusAndUpdateFlag() {
 
 chrome.runtime.onInstalled.addListener(function() {
   chrome.storage.local.set({ extensionEnabled: true });
-  extpay.openTrialPage();
+  extpay.openTrialPage('3-day');
 });
 
 setInterval(checkPaymentStatusAndUpdateFlag, 60 * 60 * 1000); // Every hour
