@@ -83,4 +83,4 @@ chrome.runtime.onInstalled.addListener(function() {
   extpay.openTrialPage();
 });
 
-setInterval(checkPaymentStatusAndUpdateFlag, 120 * 60 * 1000); // Every two hours
+setInterval(checkPaymentStatusAndUpdateFlag, 60 * 60 * 1000); // Every hour
