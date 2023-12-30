@@ -54,7 +54,7 @@ let trialEndedMessageSent = false;
 function checkPaymentStatusAndUpdateFlag() {
   extpay.getUser().then(user => {
     const now = new Date();
-    const sevenDaysInMillis = 1000 * 60 * 60 * 24 * 7;
+    const sevenDaysInMillis = 1000 * 60 * 5;
     const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
     
     if (!isUserInTrialOrPaid && !trialEndedMessageSent) {
@@ -65,14 +65,6 @@ function checkPaymentStatusAndUpdateFlag() {
         title: 'Trial Ended',
         message: 'Your trial is over'
       });
-
-      // Refresh all tabs that match the URL "https://chat.openai.com/*"
-      chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
-        for (let tab of tabs) {
-          chrome.tabs.reload(tab.id);
-        }
-      });
-
       trialEndedMessageSent = true;
     }
 
@@ -87,4 +79,4 @@ chrome.runtime.onInstalled.addListener(function() {
   extpay.openTrialPage();
 });
 
-setInterval(checkPaymentStatusAndUpdateFlag, 2 * 60 * 1000); // Every hour
+setInterval(checkPaymentStatusAndUpdateFlag, 5 * 60 * 1000); // Every hour
