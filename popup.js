@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('start-trial').addEventListener('click', function() {
     extpay.getUser().then(user => {
       const now = new Date();
-      const sevenDaysInMillis = 1000 * 60 * 60 * 24 * 7;
+      const sevenDaysInMillis = 1000 * 60 * 5;
       const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
   
       if (isUserInTrialOrPaid) {
@@ -33,16 +33,28 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.getElementById('checkPaymentStatusButton').addEventListener('click', function() {
-    chrome.runtime.sendMessage({ action: "checkPaymentStatus" });
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      backgroundPage.checkPaymentStatusAndUpdateFlag();
-    });
-  
-    // Refresh all tabs that match the URL "https://chat.openai.com/*"
-    chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
-      for (let tab of tabs) {
-        chrome.tabs.reload(tab.id);
+    extpay.getUser().then(user => {
+      const now = new Date();
+      const sevenDaysInMillis = 1000 * 60 * 5;
+      const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
+
+      if (isUserInTrialOrPaid) {
+        chrome.runtime.sendMessage({ action: "checkPaymentStatus" });
+        chrome.runtime.getBackgroundPage((backgroundPage) => {
+          backgroundPage.checkPaymentStatusAndUpdateFlag();
+        });
+
+        // Refresh all tabs that match the URL "https://chat.openai.com/*"
+        chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
+          for (let tab of tabs) {
+            chrome.tabs.reload(tab.id);
+          }
+        });
+      } else {
+        alert('Your trial is over');
       }
+    }).catch(error => {
+      console.error('Error checking payment status:', error);
     });
   });
 

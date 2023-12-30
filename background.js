@@ -27,14 +27,6 @@ extpay.onTrialStarted.addListener(user => {
     });
 });
 
-extpay.getUser().then(user => {
-    if (user.paid) {
-        console.log('User has paid');
-    } else {
-        // Open the trial setup page instead of the payment page
-        extpay.openTrialPage('7 days');
-    }
-});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.hasOwnProperty('extensionEnabled')) {
@@ -64,9 +56,23 @@ function checkPaymentStatusAndUpdateFlag() {
     const now = new Date();
     const sevenDaysInMillis = 1000 * 60 * 60 * 24 * 7;
     const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
-
+    
     if (!isUserInTrialOrPaid && !trialEndedMessageSent) {
-      alert('Your trial is over');
+      // Create a notification
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'icon.png', // replace with the path to your icon
+        title: 'Trial Ended',
+        message: 'Your trial is over'
+      });
+
+      // Refresh all tabs that match the URL "https://chat.openai.com/*"
+      chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
+        for (let tab of tabs) {
+          chrome.tabs.reload(tab.id);
+        }
+      });
+
       trialEndedMessageSent = true;
     }
 
@@ -78,7 +84,7 @@ function checkPaymentStatusAndUpdateFlag() {
 
 chrome.runtime.onInstalled.addListener(function() {
   chrome.storage.local.set({ extensionEnabled: true });
-  checkPaymentStatusAndUpdateFlag();
+  extpay.openTrialPage();
 });
 
-setInterval(checkPaymentStatusAndUpdateFlag, 60 * 60 * 1000); // Every hour
+setInterval(checkPaymentStatusAndUpdateFlag, 2 * 60 * 1000); // Every hour

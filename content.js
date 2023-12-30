@@ -3,7 +3,7 @@ chrome.storage.local.get(['extensionEnabled', 'premiumFeaturesEnabled'], functio
     const extpay = ExtPay('chatgpt-folders');
     extpay.getUser().then(user => {
       const now = new Date();
-      const sevenDays = 1000*60*60*24*7; // in milliseconds
+      const sevenDays = 1000*60*5; // in milliseconds
       if (user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDays)) {
         console.log('User has paid or is in trial period');
 
