@@ -17,7 +17,19 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.getElementById('start-trial').addEventListener('click', function() {
-    extpay.openTrialPage('3-minute');
+    extpay.getUser().then(user => {
+      const now = new Date();
+      const sevenDaysInMillis = 1000 * 60 * 60 * 24 * 7;
+      const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
+  
+      if (isUserInTrialOrPaid) {
+        extpay.openTrialPage();
+      } else {
+        alert('Your trial is over');
+      }
+    }).catch(error => {
+      console.error('Error checking payment status:', error);
+    });
   });
 
   document.getElementById('checkPaymentStatusButton').addEventListener('click', function() {

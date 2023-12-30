@@ -32,7 +32,7 @@ extpay.getUser().then(user => {
         console.log('User has paid');
     } else {
         // Open the trial setup page instead of the payment page
-        extpay.openTrialPage();
+        extpay.openTrialPage('7 days');
     }
 });
 
