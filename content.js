@@ -8,7 +8,7 @@ chrome.storage.local.get(['extensionEnabled', 'premiumFeaturesEnabled'], functio
         console.log('User has paid or is in trial period');
 
 
-chrome.storage.local.get('extensionEnabled', function(data) {
+chrome.storage.sync.get('extensionEnabled', function(data) {
   if (data.extensionEnabled) {
 // content.js
 // This function checks if the button is already added
@@ -92,7 +92,7 @@ function addFolderManagementButtons(folderDiv, folderName) {
 }
 // This function displays the chats for a specific folder
 function displayChatsForFolder(folderName) {
-  chrome.storage.local.get({folders: {}}, function (data) {
+  chrome.storage.sync.get({folders: {}}, function (data) {
     const folders = data.folders;
     const chats = folders[folderName];
     const folderInterface = document.getElementById('folder-interface');
@@ -128,7 +128,7 @@ function displayChatsForFolder(folderName) {
         const newChatName = prompt('New name for the chat:', chat.title);
         if (newChatName) {
           chat.title = newChatName;
-          chrome.storage.local.set({folders});
+          chrome.storage.sync.set({folders});
           displayChatsForFolder(folderName);
         }
       };
@@ -139,7 +139,7 @@ function displayChatsForFolder(folderName) {
       deleteButton.onclick = function() {
         if (confirm(`Are you sure you want to delete the chat '${chat.title}'?`)) {
           chats.splice(index, 1);
-          chrome.storage.local.set({folders});
+          chrome.storage.sync.set({folders});
           displayChatsForFolder(folderName);
         }
       };
@@ -160,11 +160,11 @@ function displayChatsForFolder(folderName) {
 }
 // This function handles the creation of a new folder
 function createNewFolder(folderName) {
-  chrome.storage.local.get({folders: {}}, function (data) {
+  chrome.storage.sync.get({folders: {}}, function (data) {
     const folders = data.folders;
     if (!folders[folderName]) {
       folders[folderName] = [];
-      chrome.storage.local.set({folders}, function() {
+      chrome.storage.sync.set({folders}, function() {
         loadFolders();
       });
     } else {
@@ -174,14 +174,14 @@ function createNewFolder(folderName) {
 }
 // This function handles the renaming of a folder
 function renameFolder(oldName, newName) {
-  chrome.storage.local.get({folders: {}}, function (data) {
+  chrome.storage.sync.get({folders: {}}, function (data) {
     const folders = data.folders;
     if (folders[newName]) {
       alert('A folder with this name already exists.');
     } else {
       folders[newName] = folders[oldName];
       delete folders[oldName];
-      chrome.storage.local.set({folders}, function() {
+      chrome.storage.sync.set({folders}, function() {
         loadFolders();
       });
     }
@@ -189,10 +189,10 @@ function renameFolder(oldName, newName) {
 }
 // This function handles the deletion of a folder
 function deleteFolder(folderName) {
-  chrome.storage.local.get({folders: {}}, function (data) {
+  chrome.storage.sync.get({folders: {}}, function (data) {
     const folders = data.folders;
     delete folders[folderName];
-    chrome.storage.local.set({folders}, function() {
+    chrome.storage.sync.set({folders}, function() {
       loadFolders();
     });
   });
@@ -216,7 +216,7 @@ function addAddToFolderButton(menu) {
     let defaultChatName = document.title;
     
     // Get the folder names and create dropdown
-    chrome.storage.local.get({folders: {}}, function (data) {
+    chrome.storage.sync.get({folders: {}}, function (data) {
       const folders = data.folders;
       const folderNames = Object.keys(folders);
       // Create and show the dropdown here
@@ -323,7 +323,7 @@ function findChatEntryUrl(optionsMenu) {
 // This function handles adding a chat entry to a folder
 function addToFolder(folderName, chatUrl, chatName) {
   // Removed the prompt for the folder name
-  chrome.storage.local.get({folders: {}}, function (data) {
+  chrome.storage.sync.get({folders: {}}, function (data) {
     const folders = data.folders;
     if (!folders[folderName]) {
       folders[folderName] = [];
@@ -339,7 +339,7 @@ function addToFolder(folderName, chatUrl, chatName) {
       url: chatUrl
     };
     folders[folderName].push(chatData);
-    chrome.storage.local.set({folders}, function() {
+    chrome.storage.sync.set({folders}, function() {
       console.log(`Chat '${chatName}' added to folder '${folderName}'`);
       // Refresh the folder display
       displayChatsForFolder(folderName);
@@ -412,7 +412,7 @@ function createToggle() {
 }
 // Function to load and display folders, with buttons for folder management
 function loadFolders() {
-  chrome.storage.local.get({folders: {}}, function (data) {
+  chrome.storage.sync.get({folders: {}}, function (data) {
     const folders = data.folders;
     const folderInterface = document.getElementById('folder-interface');
     folderInterface.innerHTML = '';
@@ -490,11 +490,11 @@ function addFolderManagementButtons(folderDiv, folderName) {
 }
 // This function handles the creation of a new folder
 function createNewFolder(folderName) {
-  chrome.storage.local.get({folders: {}}, function (data) {
+  chrome.storage.sync.get({folders: {}}, function (data) {
     const folders = data.folders;
     if (!folders[folderName]) {
       folders[folderName] = [];
-      chrome.storage.local.set({folders}, function() {
+      chrome.storage.sync.set({folders}, function() {
         loadFolders();
       });
     } else {
@@ -504,14 +504,14 @@ function createNewFolder(folderName) {
 }
 // This function handles the renaming of a folder
 function renameFolder(oldName, newName) {
-  chrome.storage.local.get({folders: {}}, function (data) {
+  chrome.storage.sync.get({folders: {}}, function (data) {
     const folders = data.folders;
     if (folders[newName]) {
       alert('A folder with this name already exists.');
     } else {
       folders[newName] = folders[oldName];
       delete folders[oldName];
-      chrome.storage.local.set({folders}, function() {
+      chrome.storage.sync.set({folders}, function() {
         loadFolders();
       });
     }
@@ -519,10 +519,10 @@ function renameFolder(oldName, newName) {
 }
 // This function handles the deletion of a folder
 function deleteFolder(folderName) {
-  chrome.storage.local.get({folders: {}}, function (data) {
+  chrome.storage.sync.get({folders: {}}, function (data) {
     const folders = data.folders;
     delete folders[folderName];
-    chrome.storage.local.set({folders}, function() {
+    chrome.storage.sync.set({folders}, function() {
       loadFolders();
     });
   });
