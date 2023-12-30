@@ -18,7 +18,6 @@ extpay.onPaid.addListener(user => {
 extpay.onTrialStarted.addListener(user => {
     console.log('User started trial');
     checkPaymentStatusAndUpdateFlag();
-
     // Refresh all tabs that match the URL "https://chat.openai.com/*"
     chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
         for (let tab of tabs) {

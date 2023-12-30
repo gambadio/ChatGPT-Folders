@@ -25,8 +25,12 @@ document.addEventListener('DOMContentLoaded', function () {
       if (isUserInTrialOrPaid) {
         extpay.openTrialPage();
       } else {
-        alert('Your trial is over');
-      }
+        chrome.notifications.create({
+          type: 'basic',
+          iconUrl: 'icon.png', // replace with the path to your icon
+          title: 'Trial Ended',
+          message: 'Your trial is over'
+        });      }
     }).catch(error => {
       console.error('Error checking payment status:', error);
     });
@@ -35,15 +39,15 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('checkPaymentStatusButton').addEventListener('click', function() {
     extpay.getUser().then(user => {
       const now = new Date();
-      const sevenDaysInMillis = 1000 * 60 * 5;
+      const sevenDaysInMillis = 1000 * 60 * 60 * 24 * 7;
       const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
-
+  
       if (isUserInTrialOrPaid) {
         chrome.runtime.sendMessage({ action: "checkPaymentStatus" });
-        chrome.runtime.getBackgroundPage((backgroundPage) => {
+        chrome.runtime.getBackgroundPage().then((backgroundPage) => {
           backgroundPage.checkPaymentStatusAndUpdateFlag();
         });
-
+  
         // Refresh all tabs that match the URL "https://chat.openai.com/*"
         chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
           for (let tab of tabs) {
@@ -56,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }).catch(error => {
       console.error('Error checking payment status:', error);
     });
-  });
+  }); 
 
   document.querySelector('a[href="https://www.teenagetech.xyz/useragreementfolders"]').addEventListener('click', function(e) {
     e.preventDefault();
