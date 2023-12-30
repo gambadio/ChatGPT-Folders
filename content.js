@@ -1,9 +1,9 @@
 chrome.storage.local.get(['extensionEnabled', 'premiumFeaturesEnabled'], function(data) {
   if ((data.hasOwnProperty('extensionEnabled') ? data.extensionEnabled : true) && data.premiumFeaturesEnabled) {
-    const extpay = ExtPay('chatgpt-folders');
+    const extpay = ExtPay('chatgptfolders');  
     extpay.getUser().then(user => {
       const now = new Date();
-      const sevenDays = 1000*60*5; // in milliseconds
+      const threeDays = 1000*60*60*24*3; // in milliseconds
       if (user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDays)) {
         console.log('User has paid or is in trial period');
 
@@ -60,7 +60,6 @@ function getCurrentChatLink() {
   // This will get the current URL of the open chat
   return window.location.href;
 }
-// Helper function to get the current chat name
 // Helper function to get the current chat name
 function getCurrentChatName() {
   // This will get the title of the webpage

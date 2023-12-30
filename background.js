@@ -1,6 +1,6 @@
 importScripts('./ExtPay.js'); // Include the ExtPay library
 
-const extpay = ExtPay('chatgpt-folders');
+const extpay = ExtPay('chatgptfolders');
 extpay.startBackground();
 
 extpay.onPaid.addListener(user => {
@@ -26,6 +26,11 @@ extpay.onTrialStarted.addListener(user => {
     });
 });
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'checkPaymentStatus') {
+    checkPaymentStatusAndUpdateFlag();
+  }
+});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.hasOwnProperty('extensionEnabled')) {
@@ -53,10 +58,10 @@ let trialEndedMessageSent = false;
 function checkPaymentStatusAndUpdateFlag() {
   extpay.getUser().then(user => {
     const now = new Date();
-    const sevenDaysInMillis = 1000 * 60 * 5;
+    const threeDaysInMillis = 1000*60*60*24*3;
     const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
     
-    if (!isUserInTrialOrPaid && !trialEndedMessageSent) {
+    if ((user.trialStartedAt && (now - new Date(user.trialStartedAt)) > sevenDaysInMillis) && !trialEndedMessageSent && !user.paid) {
       // Create a notification
       chrome.notifications.create({
         type: 'basic',
@@ -78,4 +83,4 @@ chrome.runtime.onInstalled.addListener(function() {
   extpay.openTrialPage();
 });
 
-setInterval(checkPaymentStatusAndUpdateFlag, 5 * 60 * 1000); // Every hour
+setInterval(checkPaymentStatusAndUpdateFlag, 120 * 60 * 1000); // Every two hours

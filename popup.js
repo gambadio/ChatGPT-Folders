@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const extpay = ExtPay('chatgpt-folders');
+  const extpay = ExtPay('chatgptfolders');
 
   const switchElement = document.getElementById('toggle-switch');
   chrome.storage.local.get('extensionEnabled', function (data) {
@@ -19,48 +19,34 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('start-trial').addEventListener('click', function() {
     extpay.getUser().then(user => {
       const now = new Date();
-      const sevenDaysInMillis = 1000 * 60 * 5;
+      const threeDaysInMillis = 1000*60*60*24*3;
       const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
   
       if (isUserInTrialOrPaid) {
         extpay.openTrialPage();
-      } else {
+      } else if ((now - new Date(user.trialStartedAt)) > sevenDaysInMillis){
         chrome.notifications.create({
           type: 'basic',
           iconUrl: 'icon.png', // replace with the path to your icon
           title: 'Trial Ended',
           message: 'Your trial is over'
         });      }
+        else {extpay.openTrialPage();}
     }).catch(error => {
       console.error('Error checking payment status:', error);
     });
   });
 
   document.getElementById('checkPaymentStatusButton').addEventListener('click', function() {
-    extpay.getUser().then(user => {
-      const now = new Date();
-      const sevenDaysInMillis = 1000 * 60 * 60 * 24 * 7;
-      const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
   
-      if (isUserInTrialOrPaid) {
-        chrome.runtime.sendMessage({ action: "checkPaymentStatus" });
-        chrome.runtime.getBackgroundPage().then((backgroundPage) => {
-          backgroundPage.checkPaymentStatusAndUpdateFlag();
-        });
-  
-        // Refresh all tabs that match the URL "https://chat.openai.com/*"
-        chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
-          for (let tab of tabs) {
-            chrome.tabs.reload(tab.id);
-          }
-        });
-      } else {
-        alert('Your trial is over');
-      }
-    }).catch(error => {
-      console.error('Error checking payment status:', error);
-    });
-  }); 
+      // Refresh all tabs that match the URL "https://chat.openai.com/*"
+      chrome.tabs.query({ url: "https://chat.openai.com/*" }, function(tabs) {
+        for (let tab of tabs) {
+          chrome.tabs.reload(tab.id);
+        }
+      });
+      chrome.runtime.sendMessage({ action: 'checkPaymentStatus' });
+  });
 
   document.querySelector('a[href="https://www.teenagetech.xyz/useragreementfolders"]').addEventListener('click', function(e) {
     e.preventDefault();
