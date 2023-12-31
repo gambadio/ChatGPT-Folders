@@ -59,9 +59,9 @@ function checkPaymentStatusAndUpdateFlag() {
   extpay.getUser().then(user => {
     const now = new Date();
     const threeDaysInMillis = 1000*60*60*24*3;
-    const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
+    const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < threeDaysInMillis);
     
-    if ((user.trialStartedAt && (now - new Date(user.trialStartedAt)) > sevenDaysInMillis) && !trialEndedMessageSent && !user.paid) {
+    if ((user.trialStartedAt && (now - new Date(user.trialStartedAt)) > threeDaysInMillis) && !trialEndedMessageSent && !user.paid) {
       // Create a notification
       chrome.notifications.create({
         type: 'basic',

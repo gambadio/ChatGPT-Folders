@@ -20,11 +20,11 @@ document.addEventListener('DOMContentLoaded', function () {
     extpay.getUser().then(user => {
       const now = new Date();
       const threeDaysInMillis = 1000*60*60*24*3;
-      const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDaysInMillis);
+      const isUserInTrialOrPaid = user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < threeDaysInMillis);
   
       if (isUserInTrialOrPaid) {
         extpay.openTrialPage('3-day');
-      } else if ((now - new Date(user.trialStartedAt)) > sevenDaysInMillis){
+      } else if (user.trialStartedAt && (now - new Date(user.trialStartedAt)) > threeDaysInMillis){
         chrome.notifications.create({
           type: 'basic',
           iconUrl: 'icon.png', // replace with the path to your icon

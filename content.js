@@ -4,7 +4,7 @@ chrome.storage.local.get(['extensionEnabled', 'premiumFeaturesEnabled'], functio
     extpay.getUser().then(user => {
       const now = new Date();
       const threeDays = 1000*60*60*24*3; // in milliseconds
-      if (user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < sevenDays)) {
+      if (user.paid || (user.trialStartedAt && (now - new Date(user.trialStartedAt)) < threeDays)) {
         console.log('User has paid or is in trial period');
 
 chrome.storage.local.get('extensionEnabled', function(data) {
