@@ -1,0 +1,1 @@
+ChatGPT Folders is a browser extension that lets you organize your ChatGPT conversations into custom folders directly within the ChatGPT interface. Easily categorize chats by topic or project for better productivity—your data stays private on your device.
