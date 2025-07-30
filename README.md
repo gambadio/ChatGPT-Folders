@@ -157,7 +157,7 @@ Found a bug or have an idea for improvement? We'd love to hear from you!
 ### Commercial Licensing
 For commercial use, enterprise licenses, or custom integrations, please contact:
 
-**Email**: [Your contact email here]  
+**Email**: ricardo.kupper@adalala.com  
 **Subject**: ChatGPT Folders Commercial License Inquiry
 
 We offer flexible commercial licensing options for businesses, teams, and organizations.
